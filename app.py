@@ -13,26 +13,24 @@ from prompts import (
 )
 
 
-# =========================================================
+
 # MODEL
-# =========================================================
+
 
 MODEL_NAME = "gemini-3.5-flash"
 
 
-# =========================================================
+
 # PAGE CONFIG
-# =========================================================
+
 
 st.set_page_config(
     page_title="FitVision",
     page_icon="🥗",
 )
 
-
-# =========================================================
 # SECRETS
-# =========================================================
+
 
 GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
 
@@ -42,9 +40,8 @@ TWILIO_WHATSAPP_FROM = st.secrets["TWILIO_WHATSAPP_FROM"]
 TWILIO_CONTENT_SID = st.secrets["TWILIO_CONTENT_SID"]
 
 
-# =========================================================
 # GEMINI CLIENT
-# =========================================================
+
 
 @st.cache_resource
 def get_gemini_client():
@@ -56,9 +53,9 @@ def get_gemini_client():
 gemini_client = get_gemini_client()
 
 
-# =========================================================
+
 # TWILIO CLIENT
-# =========================================================
+
 
 @st.cache_resource
 def get_twilio_client():
@@ -71,9 +68,8 @@ def get_twilio_client():
 twilio_client = get_twilio_client()
 
 
-# =========================================================
 # RENDER MESSAGE
-# =========================================================
+
 
 def render_message(message):
 
@@ -91,9 +87,9 @@ def render_message(message):
             )
 
 
-# =========================================================
+
 # ADD MESSAGE
-# =========================================================
+
 
 def add_message(role, kind, content):
 
@@ -110,9 +106,8 @@ def add_message(role, kind, content):
     )
 
 
-# =========================================================
+
 # ASK GEMINI
-# =========================================================
 
 def ask_gemini(parts):
 
@@ -128,10 +123,8 @@ def ask_gemini(parts):
 
         return f"Sorry, something went wrong: {error}"
 
-
-# =========================================================
 # CLEAN WHATSAPP TEXT
-# =========================================================
+
 
 def clean_whatsapp_text(text):
 
@@ -150,9 +143,8 @@ def clean_whatsapp_text(text):
     )
 
 
-# =========================================================
 # SEND WHATSAPP
-# =========================================================
+
 
 def send_whatsapp(
     to_number,
@@ -198,9 +190,8 @@ def send_whatsapp(
         return False, str(error)
 
 
-# =========================================================
 # ONBOARDING
-# =========================================================
+
 
 if "onboarded" not in st.session_state:
 
@@ -249,7 +240,7 @@ if "onboarded" not in st.session_state:
                 whatsapp_number.strip()
             )
 
-            # Create Gemini conversation
+         
             st.session_state.chat = (
                 gemini_client.chats.create(
 
@@ -270,9 +261,9 @@ if "onboarded" not in st.session_state:
     st.stop()
 
 
-# =========================================================
+
 # CHAT HEADER
-# =========================================================
+
 
 header_col, button_col = st.columns(
     [5, 2],
@@ -324,9 +315,9 @@ with button_col:
             )
 
 
-# =========================================================
+
 # USER INFORMATION
-# =========================================================
+
 
 st.caption(
     f"Logged in as "
@@ -336,9 +327,8 @@ st.caption(
 )
 
 
-# =========================================================
 # SHOW MESSAGE HISTORY
-# =========================================================
+
 
 if not st.session_state.messages:
 
@@ -357,9 +347,8 @@ else:
         render_message(message)
 
 
-# =========================================================
 # CHAT INPUT
-# =========================================================
+
 
 user_input = st.chat_input(
     "Ask a question, or attach a photo of your meal",
@@ -372,9 +361,9 @@ user_input = st.chat_input(
 )
 
 
-# =========================================================
+
 # HANDLE INPUT
-# =========================================================
+
 
 if user_input:
 
@@ -389,9 +378,9 @@ if user_input:
     parts = []
 
 
-    # -----------------------------------------------------
+
     # PHOTO
-    # -----------------------------------------------------
+
 
     if photo is not None:
 
@@ -411,9 +400,8 @@ if user_input:
         )
 
 
-    # -----------------------------------------------------
+
     # TEXT
-    # -----------------------------------------------------
 
     if text:
 
@@ -426,9 +414,8 @@ if user_input:
         parts.append(text)
 
 
-    # -----------------------------------------------------
     # PHOTO WITHOUT TEXT
-    # -----------------------------------------------------
+ 
 
     elif photo is not None:
 
@@ -438,9 +425,9 @@ if user_input:
         )
 
 
-    # -----------------------------------------------------
+ 
     # SEND TO GEMINI
-    # -----------------------------------------------------
+  
 
     with st.spinner(
         "Crunching the numbers..."
@@ -449,9 +436,8 @@ if user_input:
         answer = ask_gemini(parts)
 
 
-    # -----------------------------------------------------
     # SHOW AI RESPONSE
-    # -----------------------------------------------------
+   
 
     add_message(
         "assistant",
